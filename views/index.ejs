@@ -1,12 +1,22 @@
 <%- include('partials/header') -%>
 
-<main class="container">
-  <div class="row justify-content-around mt-5">
-    <a href="/login" class="col-12 btn btn-primary" style="margin-bottom: 10px">
-      Login</a
-    >
-    <a href="/signup" class="col-12 btn btn-primary"> Signup</a>
-  </div>
+<main class="container-fluid">
+  <nav class="col navbar navbar-light navbar-1 white border">
+    <div class="text-center navbar-brand">
+      <img
+        src="https://indefiniteloop.com/blog/img/posts/22-03-2017/logo7.jpg"
+        class="d-inline-block align-top"
+        width="30"
+        height="30"
+        alt=""
+      />
+      <a href="/profile" class="navbar-brand mb-0 h1">feedbacko</a>
+    </div>
+    <div class="justify-content-around mt-6">
+      <a href="/login" class="row-8 btn btn-danger"> Login</a>
+      <a href="/signup" class="row-8 btn btn-danger"> Signup</a>
+    </div>
+  </nav>
 </main>
 
 <%- include('partials/footer') -%>
