@@ -5,7 +5,8 @@ const CommentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  post: { // Post that the comment is tied to 
+  post: {
+    // Post that the comment is tied to
     type: mongoose.Schema.Types.ObjectId,
     ref: "Post",
   },

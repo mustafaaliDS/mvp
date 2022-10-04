@@ -1,43 +1,50 @@
 <%- include('partials/header') -%>
 <div class="container">
-  <div class="row mt-5">
+  <h1 class="text-justify mt-2">Profile</h1>
+  <div class="row justify-content-center mt-5">
       <div class="col-6">
           <div>
               <p><strong>User Name</strong>: <%= user.userName %></p>
               <p><strong>Email</strong>: <%= user.email %></p>
-              <a href="/logout" class="col-3 btn btn-primary">Logout</a>
+              <a href="/logout" class="col-3 btn btn-danger">Logout</a>
           </div>
           <div class="mt-5">
-            <h2>Add a post</h2>
+            <h2>Add your beat (Wav/mp3 only)</h2>
             <form action="/post/createPost" enctype="multipart/form-data" method="POST">
               <div class="mb-3">
                   <label for="title" class="form-label">Title</label>
                   <input type="text" class="form-control" id="title" name="title">
               </div>
               <div class="mb-3">
-                <label for="caption" class="form-label">Caption</label>
+                <label for="caption" class="form-label">Description</label>
                 <textarea class="form-control" id="caption" name="caption"></textarea>
               </div>
               <div class="mb-3">
-                <label for="imgUpload" class="form-label">Image</label>
+                <label for="imgUpload" class="form-label"></label>
                 <input type="file" class="form-control" id="imageUpload" name="file">
               </div>
-              <button type="submit" class="btn btn-primary" value="Upload">Submit</button>
+              <button type="submit" class="btn btn-danger" value="Upload">Submit</button>
             </form>
           </div>
       </div>
       <div class="col-6">
-        <ul class="row list-unstyled">
-        <% for(var i=0; i<posts.length; i++) {%>
-          <li class="col-6 justify-content-between mt-5">
-            <a href="/post/<%= posts[i]._id%>">
-              <img class="img-fluid" src="<%= posts[i].image%>">
-            </a>
-          </li>
-        <% } %>
-        </ul>
-        <div class="row justify-content-center mt-5">
-          <a class="btn btn-primary" href="/feed">Return to Feed</a>
+        <ul class="col-12 mt-4 list-group-item list-unstyled">
+          <h1>Posts</h1>
+          <% for(var i=0; i<posts.length; i++) {%>
+            <li class="row-6 justify-content-between mt-5 text-center">
+              <a href="/post/<%= posts[i]._id%>" class="list-group-item list-group-item-action"/><%= posts[i].title %></a>
+              <audio
+              controls
+              src="<%= posts[i].image%>" />
+                  <a href="/post/<%= posts[i].image%>" />
+                      Download audio
+                  </a>
+          </audio>  
+            </li>
+          <% } %>
+          </ul>
+        <div class="col justify-content-center mt-5">
+          <a class="btn btn-danger" href="/feed">Return to Feed</a>
         </div>  
       </div>  
     </div>
