@@ -22,7 +22,7 @@ module.exports = {
   getPost: async (req, res) => {
     try {
       const post = await Post.findById(req.params.id);
-      const comments = await Comment.find({ post: req.user.id })
+      const comments = await Comment.find({ post: req.params.id })
         .sort({ createdAt: "desc" })
         .lean();
       res.render("post.ejs", {
@@ -36,10 +36,10 @@ module.exports = {
   },
   createPost: async (req, res) => {
     try {
-      // Upload image to cloudinary
+      // Upload song to cloudinary
       const result = await cloudinary.uploader.upload(req.file.path, {
         resource_type: "auto",
-        audio_frequency: "44100",
+        chunk_size: 6000000,
       });
 
       console.log(result);

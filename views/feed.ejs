@@ -1,15 +1,24 @@
 <%- include('partials/header') -%>
   <div class="container">
     <div class="row justify-content-center mt-5">
-      <ul class="row list-unstyled">
+      <h1 class="text-justify">Feed</h1>
+      <ul class="col-6 mt-3 list-group-item list-unstyled">
         <% for(var i=0; i<posts.length; i++) {%>
-          <li class="col-6 justify-content-between mt-5">
-            <a href="/post/<%= posts[i]._id%>">
-              <img class="img-fluid" src="<%= posts[i].image%>">
-            </a>
+          <li class="row-6 justify-content-between mt-5 text-center">
+            <a href="/post/<%= posts[i]._id%>" class="list-group-item list-group-item-action"/><%= posts[i].title %></a>
+            <audio
+            controls
+            src="<%= posts[i].image%>" />
+                <a href="/post/<%= posts[i].image%>" />
+                    Download audio
+                </a>
+        </audio>  
           </li>
         <% } %>
         </ul>
+    </div>
+    <div class="col-6 mb-3">
+      <a class="btn btn-danger" href="/profile">Return to Profile</a>
     </div>
   </div>  
 <%- include('partials/footer') -%>
