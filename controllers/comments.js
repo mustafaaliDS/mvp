@@ -5,6 +5,7 @@ module.exports = {
     try {
       await Comment.create({
         comment: req.body.comment,
+        commenter: req.user.id,
         likes: 0,
         post: req.params.id,
       });

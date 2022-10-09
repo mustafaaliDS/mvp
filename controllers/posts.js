@@ -1,11 +1,13 @@
 const cloudinary = require("../middleware/cloudinary");
 const Post = require("../models/Post");
 const Comment = require("../models/Comments");
+const User = require("../models/User");
 
 module.exports = {
   getProfile: async (req, res) => {
     try {
       const posts = await Post.find({ user: req.user.id });
+      console.log(posts);
       res.render("profile.ejs", { posts: posts, user: req.user });
     } catch (err) {
       console.log(err);
@@ -14,17 +16,22 @@ module.exports = {
   getFeed: async (req, res) => {
     try {
       const posts = await Post.find().sort({ createdAt: "desc" }).lean();
-      res.render("feed.ejs", { posts: posts });
+      res.render("feed.ejs", { posts: posts, user: req.user });
+      console.log(req.user);
     } catch (err) {
       console.log(err);
     }
   },
   getPost: async (req, res) => {
     try {
+      let commentsArray = [];
       const post = await Post.findById(req.params.id);
       const comments = await Comment.find({ post: req.params.id })
         .sort({ createdAt: "desc" })
-        .lean();
+        .lean()
+        .populate({ path: "commenter", select: ["userName"] });
+
+      console.log(comments);
       res.render("post.ejs", {
         post: post,
         user: req.user,
@@ -40,9 +47,8 @@ module.exports = {
       const result = await cloudinary.uploader.upload(req.file.path, {
         resource_type: "auto",
         chunk_size: 6000000,
+        async: true,
       });
-
-      console.log(result);
       await Post.create({
         title: req.body.title,
         image: result.secure_url,

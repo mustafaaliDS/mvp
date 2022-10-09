@@ -5,6 +5,11 @@ const CommentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  commenter: {
+    // User that the comment is tied to
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   post: {
     // Post that the comment is tied to
     type: mongoose.Schema.Types.ObjectId,
