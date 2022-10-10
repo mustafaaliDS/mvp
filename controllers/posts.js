@@ -3,6 +3,8 @@ const Post = require("../models/Post");
 const Comment = require("../models/Comments");
 const User = require("../models/User");
 
+let userLiked = [];
+
 module.exports = {
   getProfile: async (req, res) => {
     try {
@@ -24,14 +26,12 @@ module.exports = {
   },
   getPost: async (req, res) => {
     try {
-      let commentsArray = [];
       const post = await Post.findById(req.params.id);
       const comments = await Comment.find({ post: req.params.id })
         .sort({ createdAt: "desc" })
         .lean()
         .populate({ path: "commenter", select: ["userName"] });
 
-      console.log(comments);
       res.render("post.ejs", {
         post: post,
         user: req.user,
@@ -47,16 +47,20 @@ module.exports = {
       const result = await cloudinary.uploader.upload(req.file.path, {
         resource_type: "auto",
         chunk_size: 6000000,
-        async: true,
       });
+
+      console.log(req.file.path);
+
       await Post.create({
         title: req.body.title,
         image: result.secure_url,
         cloudinaryId: result.public_id,
         caption: req.body.caption,
+        userLiked: userLiked,
         likes: 0,
         user: req.user.id,
       });
+      console.log("Result: " + JSON.stringify(result));
       console.log("Post has been added!");
       res.redirect("/profile");
     } catch (err) {
@@ -64,14 +68,37 @@ module.exports = {
     }
   },
   likePost: async (req, res) => {
+    const post = await Post.findById(req.params.id);
+    const userLikeStatus = post.userLiked.some((elem) => req.user.id == elem);
     try {
-      await Post.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-          $inc: { likes: 1 },
-        }
-      );
-      console.log("Likes +1");
+      console.log(req.user.id);
+      if (userLikeStatus === true) {
+        await Post.findOneAndUpdate(
+          { _id: req.params.id },
+          {
+            $pull: { userLiked: req.user.id },
+          }
+        );
+        await Post.findOneAndUpdate(
+          { _id: req.params.id },
+          {
+            $inc: { likes: -1 },
+          }
+        );
+      } else if (userLikeStatus === false) {
+        await Post.findOneAndUpdate(
+          { _id: req.params.id },
+          {
+            $addToSet: { userLiked: req.user.id },
+          }
+        );
+        await Post.findOneAndUpdate(
+          { _id: req.params.id },
+          {
+            $inc: { likes: 1 },
+          }
+        );
+      }
       res.redirect(`/post/${req.params.id}`);
     } catch (err) {
       console.log(err);
