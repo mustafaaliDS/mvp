@@ -2,19 +2,19 @@
   <div class="container">
     <div class="row justify-content-center mt-5">
       <h1 class="text-justify">Feed</h1>
-      <ul class="col-6 mt-3 list-group-item list-unstyled">
+      <ul class="col-5 mt-2 list-group-item list-unstyled">
         <% for(var i=0; i<posts.length; i++) {%>
-          <li class="row-6 justify-content-between mt-5 text-center">
-            <a href="/post/<%= posts[i]._id%>" class="list-group-item list-group-item-action"/><%= posts[i].title %> </a>
-            <audio
-            controls
-            src="<%= posts[i].image%>" />
-                <a href="/post/<%= posts[i].image%>" />
-                    Download audio
-                </a>
-        </audio>  
-          </li>
-        <% } %>
+          <li class="row-6 justify-content-between mt-3 text-center">
+            <span class="badge badge-dark" style="color: black">Likes: <%= posts[i].likes %></span>
+            <a href="/post/<%= posts[i]._id%>" class="list-group-item list-group-item-action"/><%= posts[i].title %> <audio
+              controls
+              src="<%= posts[i].image%>" />
+                  <a href="/post/<%= posts[i].image%>" />
+                  </a>
+          </audio>  
+        </li>
+          <% } %></a>
+      
     </div>
     <div class="col-6 mb-3">
       <a class="btn btn-danger" href="/profile">Return to Profile</a>
