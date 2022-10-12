@@ -68,37 +68,48 @@ module.exports = {
     }
   },
   likePost: async (req, res) => {
-    const post = await Post.findById(req.params.id);
-    const userLikeStatus = post.userLiked.some((elem) => req.user.id == elem);
     try {
-      console.log(req.user.id);
-      if (userLikeStatus === true) {
-        await Post.findOneAndUpdate(
-          { _id: req.params.id },
+      const post = await Post.findById(req.params.id);
+      const user = await User.findById(req.user._id);
+
+      let userLikeStatus = user.postsLiked.some((elem) => post._id == elem);
+
+      console.log(userLikeStatus); // false
+      console.log(user.postsLiked); // ["6346efcd586bfb38542bc2b9"]
+      console.log(post._id); // 6346efcd586bfb38542bc2b9
+
+      if (userLikeStatus == false) {
+        await User.findOneAndUpdate(
+          { _id: user._id },
           {
-            $pull: { userLiked: req.user.id },
+            $addToSet: { postsLiked: post._id },
           }
         );
         await Post.findOneAndUpdate(
-          { _id: req.params.id },
-          {
-            $inc: { likes: -1 },
-          }
-        );
-      } else if (userLikeStatus === false) {
-        await Post.findOneAndUpdate(
-          { _id: req.params.id },
-          {
-            $addToSet: { userLiked: req.user.id },
-          }
-        );
-        await Post.findOneAndUpdate(
-          { _id: req.params.id },
+          { _id: post._id },
           {
             $inc: { likes: 1 },
           }
         );
+        userLikeStatus;
+        console.log(userLikeStatus); // false
+      } else if (userLikeStatus == true) {
+        await User.findOneAndUpdate(
+          { _id: user._id },
+          {
+            $pull: { postsLiked: post._id },
+          }
+        );
+        await Post.findOneAndUpdate(
+          { _id: post._id },
+          {
+            $inc: { likes: -1 },
+          }
+        );
+        userLikeStatus;
+        console.log(userLikeStatus); // false
       }
+      console.log(userLikeStatus);
       res.redirect(`/post/${req.params.id}`);
     } catch (err) {
       console.log(err);

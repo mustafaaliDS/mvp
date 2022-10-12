@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
   userName: { type: String, unique: true },
+  postsLiked: { type: [mongoose.Schema.Types.ObjectId], required: true },
   email: { type: String, unique: true },
   password: String,
 });
