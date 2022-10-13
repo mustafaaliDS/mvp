@@ -69,14 +69,9 @@ module.exports = {
   },
   likePost: async (req, res) => {
     try {
-      const post = await Post.findById(req.params.id);
-      const user = await User.findById(req.user._id);
-
-      let userLikeStatus = user.postsLiked.some((elem) => post._id == elem);
-
-      console.log(userLikeStatus); // false
-      console.log(user.postsLiked); // ["6346efcd586bfb38542bc2b9"]
-      console.log(post._id); // 6346efcd586bfb38542bc2b9
+      let post = await Post.findById(req.params.id);
+      let user = await User.findById(req.user._id);
+      let userLikeStatus = user.postsLiked.includes(post._id);
 
       if (userLikeStatus == false) {
         await User.findOneAndUpdate(
@@ -91,8 +86,6 @@ module.exports = {
             $inc: { likes: 1 },
           }
         );
-        userLikeStatus;
-        console.log(userLikeStatus); // false
       } else if (userLikeStatus == true) {
         await User.findOneAndUpdate(
           { _id: user._id },
@@ -106,10 +99,7 @@ module.exports = {
             $inc: { likes: -1 },
           }
         );
-        userLikeStatus;
-        console.log(userLikeStatus); // false
       }
-      console.log(userLikeStatus);
       res.redirect(`/post/${req.params.id}`);
     } catch (err) {
       console.log(err);
