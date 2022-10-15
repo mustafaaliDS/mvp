@@ -17,9 +17,12 @@ module.exports = {
   },
   getFeed: async (req, res) => {
     try {
-      const posts = await Post.find().sort({ createdAt: "desc" }).lean();
+      const posts = await Post.find()
+        .sort({ createdAt: "desc" })
+        .lean()
+        .populate({ path: "user", select: ["userName"] });
+      console.log(posts);
       res.render("feed.ejs", { posts: posts, user: req.user });
-      console.log(req.user);
     } catch (err) {
       console.log(err);
     }
@@ -27,15 +30,20 @@ module.exports = {
   getPost: async (req, res) => {
     try {
       const post = await Post.findById(req.params.id);
+      const user = await User.find({ _id: post.user });
+
       const comments = await Comment.find({ post: req.params.id })
         .sort({ createdAt: "desc" })
         .lean()
         .populate({ path: "commenter", select: ["userName"] });
 
+      console.log(comments);
+
       res.render("post.ejs", {
         post: post,
         user: req.user,
         comments: comments,
+        postUser: user,
       });
     } catch (err) {
       console.log(err);

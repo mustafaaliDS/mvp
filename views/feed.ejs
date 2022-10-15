@@ -6,7 +6,10 @@
         <% for(var i=0; i<posts.length; i++) {%>
           <li class="row-6 justify-content-between mt-3 text-center">
             <span class="badge badge-dark" style="color: black">Likes: <%= posts[i].likes %></span>
-            <a href="/post/<%= posts[i]._id%>" class="list-group-item list-group-item-action"/><%= posts[i].title %> <audio
+            <a href="/post/<%= posts[i]._id%>" class="list-group-item list-group-item-action"/>
+              <p><strong>User: </strong><%= posts[i].user.userName%></p>
+              <p><strong>Title: </strong><%= posts[i].title %></p>
+              <audio
               controls
               src="<%= posts[i].image%>" />
                   <a href="/post/<%= posts[i].image%>" />
