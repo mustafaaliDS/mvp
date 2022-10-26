@@ -3,14 +3,24 @@ const Post = require("../models/Post");
 const Comment = require("../models/Comments");
 const User = require("../models/User");
 
-let userLiked = [];
-
 module.exports = {
   getProfile: async (req, res) => {
     try {
-      const posts = await Post.find({ user: req.user.id });
-      console.log(posts);
-      res.render("profile.ejs", { posts: posts, user: req.user });
+      const user = await User.find({ _id: req.params.id });
+      const posts =
+        (await Post.find({ user: req.params.id }).populate({
+          path: "user",
+          select: ["userName", "email"],
+        })) == false
+          ? user
+          : await Post.find({ user: req.params.id }).populate({
+              path: "user",
+              select: ["userName", "email"],
+            });
+
+      console.log(req.params.id);
+
+      res.render("profile.ejs", { posts: posts, user: req.user.id });
     } catch (err) {
       console.log(err);
     }
@@ -21,7 +31,6 @@ module.exports = {
         .sort({ createdAt: "desc" })
         .lean()
         .populate({ path: "user", select: ["userName"] });
-      console.log(posts);
       res.render("feed.ejs", { posts: posts, user: req.user });
     } catch (err) {
       console.log(err);
@@ -29,21 +38,26 @@ module.exports = {
   },
   getPost: async (req, res) => {
     try {
-      const post = await Post.findById(req.params.id);
+      const post = await Post.findById(req.params.id).populate({
+        path: "user",
+        select: ["userName"],
+      });
       const user = await User.find({ _id: post.user });
-
       const comments = await Comment.find({ post: req.params.id })
         .sort({ createdAt: "desc" })
         .lean()
         .populate({ path: "commenter", select: ["userName"] });
 
-      console.log(comments);
+      const postUser = await Post.find({ user: user[0]._id }).populate({
+        path: "user",
+        select: ["userName"],
+      });
 
       res.render("post.ejs", {
         post: post,
         user: req.user,
         comments: comments,
-        postUser: user,
+        postUser: postUser,
       });
     } catch (err) {
       console.log(err);
@@ -57,20 +71,18 @@ module.exports = {
         chunk_size: 6000000,
       });
 
-      console.log(req.file.path);
-
       await Post.create({
         title: req.body.title,
         image: result.secure_url,
         cloudinaryId: result.public_id,
         caption: req.body.caption,
-        userLiked: userLiked,
+        userLiked: [],
         likes: 0,
         user: req.user.id,
       });
       console.log("Result: " + JSON.stringify(result));
       console.log("Post has been added!");
-      res.redirect("/profile");
+      res.redirect(`/profile/${req.user._id}`);
     } catch (err) {
       console.log(err);
     }

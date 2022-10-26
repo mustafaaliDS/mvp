@@ -1,13 +1,19 @@
 <%- include('partials/header') -%>
 <div class="container">
   <h1 class="text-justify mt-2">Profile</h1>
+  <%if(posts[0].collection.collectionName == 'users'){ %>
   <div class="row justify-content-center mt-5">
       <div class="col-6">
           <div>
-              <p><strong>User Name</strong>: <%= user.userName %></p>
-              <p><strong>Email</strong>: <%= user.email %></p>
+              <p><strong>User Name</strong>: <%= posts[0].userName %></p>
+              <%if(posts[0]._id == user){ %>
+              <p><strong>Email</strong>: <%= posts[0].email %></p>
               <a href="/logout" class="col-3 btn btn-danger">Logout</a>
+              <%}%>
+
           </div>
+
+          <%if(posts[0]._id == user){ %>
           <div class="mt-5">
             <h2>Add your beat (Wav/mp3 only)</h2>
             <form action="/post/createPost" enctype="multipart/form-data" method="POST">
@@ -26,6 +32,47 @@
               <button type="submit" class="btn btn-danger" value="Upload">Submit</button>
             </form>
           </div>
+          <%}%>
+      </div>
+      <div class="col-6">
+        <div class="col justify-content-center mt-5">
+          <a class="btn btn-danger" href="/feed">Return to Feed</a>
+        </div>  
+      </div>  
+    </div>
+    <%}%>
+  <%if(posts[0].collection.collectionName == 'posts'){ %>
+  <div class="row justify-content-center mt-5">
+      <div class="col-6">
+          <div>
+              <p><strong>User Name</strong>: <%= posts[0].user.userName %></p>
+              <%if(posts[0].user._id == user){ %>
+              <p><strong>Email</strong>: <%= posts[0].user.email %></p>
+              <a href="/logout" class="col-3 btn btn-danger">Logout</a>
+              <%}%>
+
+          </div>
+
+          <%if(posts[0].user._id == user){ %>
+          <div class="mt-5">
+            <h2>Add your beat (Wav/mp3 only)</h2>
+            <form action="/post/createPost" enctype="multipart/form-data" method="POST">
+              <div class="mb-3">
+                  <label for="title" class="form-label">Title</label>
+                  <input type="text" class="form-control" id="title" name="title">
+              </div>
+              <div class="mb-3">
+                <label for="caption" class="form-label">Description</label>
+                <textarea class="form-control" id="caption" name="caption"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="imgUpload" class="form-label"></label>
+                <input type="file" class="form-control" id="imageUpload" name="file">
+              </div>
+              <button type="submit" class="btn btn-danger" value="Upload">Submit</button>
+            </form>
+          </div>
+          <%}%>
       </div>
       <div class="col-6">
         <ul class="col-12 mt-4 list-group-item list-unstyled">
@@ -48,6 +95,7 @@
         </div>  
       </div>  
     </div>
+    <%}%>
   </div>
 </div>
 <%- include('partials/footer') -%>

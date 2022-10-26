@@ -3,7 +3,8 @@
   <div class="row justify-content-center mt-5">
     <div class="col-6 ">
       <h2><%= post.title %></h2>
-      <span class="badge badge-dark" style="color: black">User: <%= postUser[0].userName %></span>
+      <a href="/profile/<%=postUser[0].user.id%>"><p><strong>User: <%= postUser[0].user.userName %></p>
+      </a>
 
         <audio
         controls
@@ -56,7 +57,7 @@
     <% } %>
   </ul>
   <div class="mt-5">
-    <a class="btn btn-danger mr-7" href="/profile">Return to Profile</a>
+    <a class="btn btn-danger" href="/profile/<%=user.id%>">Return to Profile</a>
     <a class="btn btn-danger" href="/feed">Return to Feed</a>
   </div>
 </div>
