@@ -18,9 +18,7 @@ module.exports = {
               select: ["userName", "email"],
             });
 
-      console.log(req.params.id);
-
-      res.render("profile.ejs", { posts: posts, user: req.user.id });
+      res.json({ posts: posts, user: req.user.id });
     } catch (err) {
       console.log(err);
     }
@@ -31,7 +29,7 @@ module.exports = {
         .sort({ createdAt: "desc" })
         .lean()
         .populate({ path: "user", select: ["userName"] });
-      res.render("feed.ejs", { posts: posts, user: req.user });
+      res.json({ posts: posts, user: req.user });
     } catch (err) {
       console.log(err);
     }
@@ -53,7 +51,7 @@ module.exports = {
         select: ["userName"],
       });
 
-      res.render("post.ejs", {
+      res.json({
         post: post,
         user: req.user,
         comments: comments,
